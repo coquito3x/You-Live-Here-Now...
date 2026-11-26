@@ -1,5 +1,5 @@
 # You Live Here Now...
 
-Claude & Human Coded. 
+AI & Human Coded. 
 
 Fan-made, not affiliated with Konami. No game assets are used.
