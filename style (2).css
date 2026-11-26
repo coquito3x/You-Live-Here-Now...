@@ -1,0 +1,198 @@
+:root {
+  --bg: #0d0b0a;
+  --fg: #b9b2a6;
+  --dim: #6d675e;
+  --rust: #8f2a22;
+  --mono: "Courier New", Courier, monospace;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--mono);
+  overflow: hidden;
+}
+
+.sr {
+  position: absolute; width: 1px; height: 1px;
+  overflow: hidden; clip: rect(0 0 0 0);
+}
+
+/* ---------- atmosphere ---------- */
+.fog {
+  position: fixed; inset: -20%;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 30% 40%, rgba(180,175,165,.16), transparent 55%),
+    radial-gradient(ellipse at 70% 65%, rgba(150,148,140,.12), transparent 50%);
+  filter: blur(30px);
+}
+.f1 { animation: drift 38s linear infinite alternate; }
+.f2 { animation: drift 55s linear infinite alternate-reverse; opacity: .7; }
+
+@keyframes drift {
+  from { transform: translate3d(-6%, -2%, 0) scale(1); }
+  to   { transform: translate3d(6%, 3%, 0) scale(1.15); }
+}
+
+.grain {
+  position: fixed; inset: 0; pointer-events: none; opacity: .09;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  animation: grain 1.2s steps(6) infinite;
+}
+@keyframes grain {
+  0% { transform: translate(0,0); }
+  25% { transform: translate(-3%, 2%); }
+  50% { transform: translate(2%, -3%); }
+  75% { transform: translate(-2%, -1%); }
+  100% { transform: translate(3%, 3%); }
+}
+
+.vignette {
+  position: fixed; inset: 0; pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 35%, rgba(0,0,0,.85) 100%);
+}
+
+/* ---------- content ---------- */
+main {
+  position: relative; z-index: 2;
+  max-width: 640px; height: 100%;
+  margin: 0 auto; padding: 12vh 24px 80px;
+  display: flex; flex-direction: column; gap: 22px;
+}
+
+.meta {
+  margin: 0; font-size: 11px; letter-spacing: .3em; color: var(--dim);
+}
+
+h1 {
+  margin: 0; font-weight: 400;
+  font-size: clamp(30px, 7vw, 54px);
+  letter-spacing: .04em;
+  color: #cfc8ba;
+  position: relative;
+  animation: flicker 7s infinite;
+}
+h1.glitch::before, h1.glitch::after {
+  content: attr(data-text);
+  position: absolute; left: 0; top: 0;
+}
+h1.glitch::before { color: var(--rust); transform: translate(-2px, 1px); clip-path: inset(0 0 55% 0); }
+h1.glitch::after  { color: #3b4a52;     transform: translate(2px, -1px); clip-path: inset(55% 0 0 0); }
+
+@keyframes flicker {
+  0%, 92%, 100% { opacity: 1; }
+  93% { opacity: .35; }
+  94% { opacity: 1; }
+  96% { opacity: .55; }
+}
+
+.log {
+  flex: 1; min-height: 0; overflow-y: auto;
+  font-size: 14px; line-height: 1.7; color: var(--fg);
+}
+.log p { margin: 0 0 8px; }
+.log .sys { color: var(--dim); }
+.log .you { color: #8a8478; }
+.log .bad { color: var(--rust); }
+
+#prompt {
+  display: flex; align-items: center; gap: 10px;
+  border-bottom: 1px solid #2b2724; padding-bottom: 6px;
+}
+.caret { color: var(--rust); }
+#input {
+  flex: 1; background: transparent; border: 0; outline: 0;
+  color: var(--fg); font: inherit; font-size: 14px; letter-spacing: .05em;
+}
+#input::placeholder { color: #4a453f; }
+
+#exit {
+  border: 1px solid #2b2724; padding: 16px 18px;
+  background: rgba(15,12,11,.8); font-size: 14px;
+}
+#exit p { margin: 0 0 10px; }
+.dest code { color: #cfc8ba; }
+#exit a {
+  color: #cfc8ba; border-bottom: 1px solid var(--rust);
+  text-decoration: none; padding-bottom: 1px;
+}
+#exit a:hover, #exit a:focus-visible { color: #fff; outline: none; }
+#count { color: var(--dim); margin-left: 8px; }
+#cancel {
+  background: none; border: 1px solid #2b2724; color: var(--dim);
+  font: inherit; font-size: 12px; padding: 4px 12px; cursor: pointer;
+}
+#cancel:hover { color: var(--fg); border-color: var(--dim); }
+
+footer {
+  position: fixed; bottom: 14px; left: 0; right: 0; z-index: 2;
+  text-align: center; font-size: 10px; color: #4a453f; padding: 0 16px;
+}
+
+/* siren pulse used once the town "notices" you */
+body.siren::after {
+  content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 3;
+  background: rgba(120,20,15,.18);
+  animation: siren 2.4s ease-in-out 2;
+}
+@keyframes siren { 0%,100% { opacity: 0; } 50% { opacity: 1; } }
+
+/* ---------- sound toggle ---------- */
+#sound {
+  position: fixed; top: 14px; right: 16px; z-index: 4;
+  background: none; border: 1px solid #2b2724; color: var(--dim);
+  font: inherit; font-size: 11px; padding: 3px 9px; cursor: pointer;
+}
+#sound:hover { color: var(--fg); }
+
+/* ---------- Fog World (the other side) ---------- */
+body.otherworld {
+  --bg: #120a08; --fg: #c4a79a; --dim: #7a4a40; --rust: #b8402f;
+  background: #120a08;
+}
+body.otherworld .fog {
+  background:
+    radial-gradient(ellipse at 30% 40%, rgba(140,60,40,.24), transparent 55%),
+    radial-gradient(ellipse at 70% 65%, rgba(90,30,20,.2), transparent 50%);
+}
+body.otherworld::before {
+  content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 1;
+  opacity: .2;
+  background:
+    repeating-linear-gradient(0deg, transparent 0 14px, rgba(0,0,0,.65) 14px 16px),
+    repeating-linear-gradient(90deg, transparent 0 14px, rgba(0,0,0,.65) 14px 16px);
+  animation: sway 9s ease-in-out infinite alternate;
+}
+body.otherworld h1 { color: #d8a999; }
+body.otherworld #input { color: #d8b8aa; }
+@keyframes sway {
+  from { transform: translateY(-4px); }
+  to   { transform: translateY(4px); }
+}
+
+/* ---------- Room 312 page ---------- */
+body.room { overflow-y: auto; }
+body.room main { height: auto; min-height: 100%; padding-bottom: 110px; }
+.letter {
+  margin: 0; white-space: pre-wrap; font: inherit; font-size: 14px;
+  line-height: 1.95; color: #a8a094;
+  border-left: 1px solid #2b2724; padding-left: 16px;
+}
+#tv {
+  width: 160px; height: 120px; cursor: pointer;
+  border: 6px solid #1d1917; image-rendering: pixelated;
+  filter: contrast(1.2) brightness(.8);
+}
+.tvwrap { display: flex; align-items: flex-end; gap: 16px; }
+.hintline { margin: 0; min-height: 1.6em; font-size: 12px; color: var(--dim); }
+.back a { color: var(--dim); font-size: 12px; text-decoration: none; border-bottom: 1px solid #2b2724; }
+.back a:hover { color: var(--fg); }
+
+@media (prefers-reduced-motion: reduce) {
+  .fog, .grain, h1, body.siren::after, body.otherworld::before { animation: none; }
+}

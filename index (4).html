@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>You Live Here Now...</title>
+  <meta name="description" content="Silent Hill, Maine. Population: unknown.">
+  <meta name="robots" content="noindex">
+  <meta name="referrer" content="no-referrer">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23100d0b'/%3E%3Ccircle cx='8' cy='8' r='3' fill='%23a33'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Room 312 is not on the map. Some doors are only reachable by address. -->
+  <button id="sound" type="button" aria-label="Toggle sound">sound: off</button>
+  <div class="fog f1"></div>
+  <div class="fog f2"></div>
+  <div class="grain"></div>
+  <div class="vignette"></div>
+
+  <main>
+    <p class="meta" id="meta">SILENT HILL, MAINE &mdash; 43&deg;N &mdash; LAKE TOLUCA</p>
+
+    <h1 id="title" data-text="You live here now...">You live here now...</h1>
+
+    <div class="log" id="log" aria-live="polite"></div>
+
+    <form id="prompt" autocomplete="off" spellcheck="false">
+      <label for="input" class="sr">Enter a word</label>
+      <span class="caret">&gt;</span>
+      <input id="input" type="text" maxlength="24" placeholder="say something to the town" autocapitalize="off">
+    </form>
+
+    <div id="exit" hidden>
+      <p>The fog thins. There is a road out.</p>
+      <p class="dest">Destination: <code id="dest-host"></code></p>
+      <p>
+        <a id="exit-link" rel="noopener noreferrer nofollow" referrerpolicy="no-referrer">Leave town</a>
+        <span id="count"></span>
+      </p>
+      <button id="cancel" type="button">Stay</button>
+    </div>
+  </main>
+
+  <footer>
+    <span>Fan-made ARG. Not affiliated with Konami. Redirects are checked and always shown before you leave.</span>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
