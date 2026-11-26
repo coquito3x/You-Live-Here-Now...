@@ -33,9 +33,3 @@ The acrostic: **D**o not answer... / **R**ain runs... / **E**very door... / **A*
 ## Audio
 
 Generated in the browser with no audio files: radio static with occasional bursts, a low drone, and a siren on the `siren` command. It starts on the first keystroke or click, and the **sound** toggle (top right) mutes it.
-
-## Changing it
-
-- Redirect target: `REDIRECT_URL` and `ALLOWED_HOSTS` at the top of `script.js`.
-- New words: add to `RESPONSES` (street) or `OW_RESPONSES` (Fog World).
-- New password: change the first letters of the lines in `room312.html` and the `dreams` check in `script.js`.
