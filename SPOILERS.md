@@ -35,9 +35,3 @@ The acrostic: **D**o not answer... / **R**ain runs... / **E**very door... / **A*
 ## Audio
 
 Generated in the browser with no audio files, through a reverb. Layers: wind, a detuned sub drone, faint radio static with periodic bursts (the radio icon at the top lights up on each one), and distant metallic clanks. Typing makes soft key ticks and answers make a low blip. The `siren` command plays a two-voice siren. Entering Fog World adds a sub boom, a dissonant pad, a deeper drone and more frequent clanks. Solving `213` plays a door creak and thud. The room page adds rain, and the static swells when you hover the TV. Audio starts on the first keystroke or click, and the **SOUND** button (top right) mutes it.
-
-## Changing it
-
-- Redirect target: `REDIRECT_URL` and `ALLOWED_HOSTS` at the top of `script.js`.
-- New words: add to `RESPONSES` (street) or `OW_RESPONSES` (Fog World).
-- New password: change the first letters of the lines in `room312.html` and the `dreams` check in `script.js`.
