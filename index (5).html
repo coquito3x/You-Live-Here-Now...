@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>You Live Here Now...</title>
+  <meta name="description" content="Silent Hill, Maine. Population: unknown.">
+  <meta name="robots" content="noindex">
+  <meta name="referrer" content="no-referrer">
+  <meta name="theme-color" content="#070707">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23100d0b'/%3E%3Ccircle cx='8' cy='8' r='3' fill='%23a33'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Room 312 is not on the map. Some doors are only reachable by address. -->
+  <canvas id="fx" aria-hidden="true"></canvas>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="scan" aria-hidden="true"></div>
+  <div class="vignette" aria-hidden="true"></div>
+
+  <div class="hud">
+    <div class="loc"><i class="dot"></i><span id="loc">Unknown &mdash; Fog</span></div>
+    <div class="hudr">
+      <span id="radio" class="radio" title="Radio" aria-hidden="true">
+        <svg viewBox="0 0 24 24" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 21V9"/><circle cx="12" cy="7" r="1.6"/>
+          <path d="M7.5 4.5a6.4 6.4 0 0 0 0 5M16.5 4.5a6.4 6.4 0 0 1 0 5"/>
+          <path d="M4.5 2.5a10 10 0 0 0 0 9M19.5 2.5a10 10 0 0 1 0 9"/>
+        </svg>
+      </span>
+      <button id="sound" class="btn" type="button" aria-label="Toggle sound">SOUND OFF</button>
+    </div>
+  </div>
+
+  <main id="main">
+    <header>
+      <p class="eyebrow" id="meta">Silent Hill &middot; Maine</p>
+      <h1 id="title" data-text="You live here now...">You live here now...</h1>
+      <div class="rule"><i></i></div>
+    </header>
+
+    <section class="dialog" aria-label="Dialogue">
+      <div class="log" id="log" aria-live="polite"></div>
+    </section>
+
+    <form id="prompt" autocomplete="off" spellcheck="false">
+      <label for="input" class="sr">Say something to the town</label>
+      <span class="caret">&rsaquo;</span>
+      <input id="input" type="text" maxlength="24" placeholder="say something to the town" autocapitalize="off">
+      <button id="mapBtn" class="btn" type="button">MAP</button>
+    </form>
+
+    <div id="exit" class="exit" hidden>
+      <p class="lead">The fog thins. There is a road out.</p>
+      <p class="dest">Destination <code id="dest-host"></code></p>
+      <p class="opts">
+        <a id="exit-link" rel="noopener noreferrer nofollow" referrerpolicy="no-referrer">Leave town</a>
+        <span id="count"></span>
+        <button id="cancel" class="btn" type="button">STAY</button>
+      </p>
+    </div>
+  </main>
+
+  <!-- the map: marked in red as you find places -->
+  <div id="map" class="mapwrap" hidden>
+    <div class="paper" role="dialog" aria-label="Town map">
+      <button id="mapClose" class="btn" type="button">CLOSE</button>
+      <svg viewBox="0 0 400 300" font-family="Georgia, 'Times New Roman', serif">
+        <rect x="6" y="6" width="388" height="288" fill="none" stroke="#2d2619" stroke-width="1.2" opacity=".55"/>
+        <!-- lake -->
+        <path d="M230 175 C258 148 322 146 352 174 C382 202 372 250 332 268 C292 286 240 272 226 238 C214 212 214 190 230 175 Z"
+              fill="#8d9a94" fill-opacity=".55" stroke="#46514c" stroke-width="1.4"/>
+        <path d="M244 190 C268 176 306 176 330 190" fill="none" stroke="#46514c" stroke-width=".7" opacity=".6"/>
+        <path d="M240 214 C270 200 316 200 346 216" fill="none" stroke="#46514c" stroke-width=".7" opacity=".5"/>
+        <text x="292" y="226" font-size="11" font-style="italic" text-anchor="middle" fill="#2d2619">Toluca Lake</text>
+        <!-- roads -->
+        <g fill="none" stroke="#3a3224" stroke-width="3" stroke-linecap="round">
+          <path d="M15 112 H188 L236 148"/>
+          <path d="M100 28 V272"/>
+          <path d="M20 202 H214"/>
+        </g>
+        <g font-size="8" fill="#3a3224" letter-spacing=".6">
+          <text x="22" y="106">NATHAN AVENUE</text>
+          <text x="22" y="196">KATZ STREET</text>
+          <text transform="translate(94 262) rotate(-90)">CARROLL STREET</text>
+        </g>
+        <!-- places -->
+        <g fill="#2d2619">
+          <rect x="52" y="52" width="7" height="7"/>
+          <rect x="182" y="68" width="7" height="7"/>
+          <rect x="231" y="146" width="7" height="7"/>
+          <rect x="331" y="144" width="7" height="7"/>
+          <rect x="91" y="231" width="7" height="7"/>
+        </g>
+        <g font-size="10" fill="#2d2619">
+          <text x="64" y="58">Alchemilla Hospital</text>
+          <text x="194" y="74">Midwich Elementary</text>
+          <text x="226" y="142" text-anchor="end">Rosewater Park</text>
+          <text x="334" y="136" text-anchor="middle">Lakeview Hotel</text>
+          <text x="103" y="249">Brookhaven Hospital</text>
+        </g>
+        <!-- red pen marks (shown as you find places) -->
+        <g class="marks" fill="none" stroke="#a5281d" stroke-width="2.2" stroke-linecap="round">
+          <ellipse data-mark="alchemilla" cx="95" cy="55" rx="52" ry="11" transform="rotate(-3 95 55)"/>
+          <ellipse data-mark="midwich" cx="236" cy="71" rx="52" ry="11" transform="rotate(2 236 71)"/>
+          <ellipse data-mark="rosewater" cx="190" cy="145" rx="46" ry="11" transform="rotate(-2 190 145)"/>
+          <ellipse data-mark="lakeview" cx="334" cy="140" rx="40" ry="14" transform="rotate(3 334 140)"/>
+          <ellipse data-mark="brookhaven" cx="146" cy="245" rx="52" ry="11" transform="rotate(-2 146 245)"/>
+          <ellipse data-mark="toluca" cx="292" cy="222" rx="38" ry="13" transform="rotate(-4 292 222)"/>
+          <g data-mark="room312">
+            <path d="M313 154 L355 152" />
+            <text x="318" y="166" font-size="13" font-style="italic" fill="#a5281d" stroke="none">Room 312</text>
+          </g>
+        </g>
+        <!-- compass + note -->
+        <g stroke="#2d2619" fill="#2d2619" stroke-width="1">
+          <path d="M370 40 V16 M370 16 L366 24 M370 16 L374 24" fill="none"/>
+          <text x="370" y="52" font-size="9" text-anchor="middle" stroke="none">N</text>
+        </g>
+        <text x="200" y="286" font-size="8" text-anchor="middle" fill="#2d2619" opacity=".7" font-style="italic">composite map &middot; not to scale</text>
+      </svg>
+    </div>
+  </div>
+
+  <footer>Fan-made ARG. Not affiliated with Konami. Redirects are checked and always shown before you leave.</footer>
+
+  <script src="engine.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

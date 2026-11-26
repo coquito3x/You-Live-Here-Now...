@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>You Live Here Now...</title>
+  <meta name="robots" content="noindex">
+  <meta name="referrer" content="no-referrer">
+  <meta name="theme-color" content="#070707">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23100d0b'/%3E%3Ccircle cx='8' cy='8' r='3' fill='%23a33'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="room">
+  <canvas id="fx" aria-hidden="true"></canvas>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="scan" aria-hidden="true"></div>
+  <div class="vignette" aria-hidden="true"></div>
+
+  <div class="hud">
+    <div class="loc"><i class="dot"></i><span>Lakeview Hotel &mdash; Room 312</span></div>
+    <div class="hudr">
+      <span id="radio" class="radio" aria-hidden="true">
+        <svg viewBox="0 0 24 24" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 21V9"/><circle cx="12" cy="7" r="1.6"/>
+          <path d="M7.5 4.5a6.4 6.4 0 0 0 0 5M16.5 4.5a6.4 6.4 0 0 1 0 5"/>
+          <path d="M4.5 2.5a10 10 0 0 0 0 9M19.5 2.5a10 10 0 0 1 0 9"/>
+        </svg>
+      </span>
+      <button id="sound" class="btn" type="button" aria-label="Toggle sound">SOUND OFF</button>
+    </div>
+  </div>
+
+  <main>
+    <header>
+      <p class="eyebrow">Third floor</p>
+      <h1 data-text="Room 312">Room 312</h1>
+      <div class="rule"><i></i></div>
+    </header>
+
+    <div class="roomgrid">
+      <figure class="tvbox">
+        <canvas id="tv" width="96" height="72" title="The television"></canvas>
+        <figcaption id="hint">The television is on. It only shows static.</figcaption>
+      </figure>
+      <div class="keytag" aria-hidden="true"><span>312</span></div>
+    </div>
+
+    <article class="memo">
+      <p>Do not answer when the radio speaks to you.</p>
+      <p>Rain runs the wrong way on the glass in this room.</p>
+      <p>Every door in the hotel opens onto the same hallway.</p>
+      <p>At night the lake is louder than the street.</p>
+      <p>My handwriting changes while I write this.</p>
+      <p>Stay if you must, but do not sign the guest book.</p>
+    </article>
+
+    <p class="back"><a href="index.html">return to the street</a></p>
+  </main>
+
+  <script src="engine.js"></script>
+  <script>
+    (function () {
+      try { sessionStorage.setItem("room312", "1"); } catch (e) {}
+
+      /* rain on the glass (starts with the audio); fog level comes from session */
+      try {
+        window.SH.audio.setRain(true);
+        if (sessionStorage.getItem("ow") === "1") window.SH.audio.setLevel(1);
+      } catch (e) {}
+
+      /* static on the television */
+      var c = document.getElementById("tv"), x = c.getContext("2d");
+      var img = x.createImageData(c.width, c.height);
+      function frame() {
+        for (var i = 0; i < img.data.length; i += 4) {
+          var v = Math.random() * 255;
+          img.data[i] = img.data[i + 1] = img.data[i + 2] = v;
+          img.data[i + 3] = 255;
+        }
+        x.putImageData(img, 0, 0);
+      }
+      frame();
+      if (!window.SH.reduced) setInterval(frame, 90);
+
+      /* the radio gets louder near the television */
+      c.addEventListener("pointerenter", function () { window.SH.audio.tvBoost(true); });
+      c.addEventListener("pointerleave", function () { window.SH.audio.tvBoost(false); });
+
+      /* escalating hints if you click the television */
+      var hints = [
+        "The paper is not the message. The edges are.",
+        "Read down, not across.",
+        "Take the first letter of every line. Say it to the town."
+      ];
+      var n = 0, hint = document.getElementById("hint");
+      c.addEventListener("click", function () {
+        hint.textContent = hints[Math.min(n, hints.length - 1)];
+        n++;
+      });
+    })();
+  </script>
+</body>
+</html>
