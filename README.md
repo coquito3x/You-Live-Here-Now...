@@ -1,2 +1,2 @@
 # You-Live-Here-Now...
-Fan Created | Claude Coded | Silent Hill ARG | Practice &amp; Research Purposes 
+Fan Created | Claude & Human Coded | Silent Hill ARG | Practice &amp; Research Purposes 
